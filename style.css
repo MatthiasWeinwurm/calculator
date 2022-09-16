@@ -33,13 +33,30 @@
     gap: 8px;
 }
 
-.btnRow, #clear {
+.btnRow, #delRow {
     width: 100%;
     flex-grow: 1;
 }
 
+#delRow {
+    display: flex;
+    gap: 8px;
+}
+
+#clear, #del {
+flex: 1 1 32px;
+}
+
 #clear {
     background-color: rgb(255, 200, 200);
+}
+
+#del {
+    background-color: rgb(200, 200, 255);
+}
+
+.highOp {
+    background-color: rgb(100, 200, 200);
 }
 
 .btnRow {

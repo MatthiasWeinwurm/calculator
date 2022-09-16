@@ -22,15 +22,14 @@ function operate(a, operator, b) {
             return subtract(a, b);
         case '*':
             return multiply(a, b);
-        case '/':
+        case '%':
             return divide(a, b);
         default:
             break;
     }
 }
 
-function click(e) {
-    let pressed = e.target.innerText;
+function process(pressed) {
     if (pressed == 'CLEAR') {
         display = "";
         operation = {
@@ -38,19 +37,30 @@ function click(e) {
             operator: null,
             second: null
         }
+        opHigh = false;
+    } else if (pressed == 'DELETE') {
+        if (display == "") {
+            return;
+        } else {
+            display = display.substring(0, display.length - 1);
+        }
     } else if (['+', '-', '%', '*'].includes(pressed)) {
         if (operation.operator) {
             operation.second = Number(display);
-            console.log(operation);
-            console.log(operate(operation.first, operation.operator, operation.second));
             operation.first = operate(operation.first, operation.operator, operation.second);
+            display = operation.first;
             operation.second = null;
         } else {
             operation.first = Number(display);
         }
         operation.operator = pressed;
-        display = "";
+        opHigh = true;
+        //display = "";
     } else if (pressed == ".") {
+        if (opHigh) {
+            opHigh = false;
+            display = "";
+        }
         if (display.includes('.')) {
             return;
         } else if (display == "") {
@@ -61,16 +71,41 @@ function click(e) {
     } else if (pressed == '=') {
         operation.second = Number(display);
         display = operate(operation.first, operation.operator, operation.second);
+        opHigh = false;
     } else {
+        if (opHigh) {
+            opHigh = false;
+            display = "";
+        }
         display += pressed;
     }
     document.querySelector('#displayText').innerText = display;
-    console.log(operation);
+    /*
+    if (opHigh) {
+        e.target.style.backgroundColor = "rgb(100, 200, 200)";
+    } else {
+        e.target.style.backgroundColor = "rgb(200, 200, 200)";
+    }*/
+}
+
+function click(e) {
+    let pressed = e.target.innerText;
+    process(pressed);
+}
+
+function key(e) {
+    if (e.key == "Backspace") {
+        process('DELETE');
+    } else if (acceptableKeys.includes(e.key)) {
+        process(e.key)
+    }
 }
 
 function mouseOver(e) {
     if (e.target.innerText == "CLEAR") {
         e.target.style.backgroundColor = "rgb(255, 180, 180)";
+    } else if (e.target.innerText == "DELETE") {
+        e.target.style.backgroundColor = "rgb(180, 180, 255)";
     } else {
         e.target.style.backgroundColor = "rgb(200, 200, 200)";
     }
@@ -79,6 +114,8 @@ function mouseOver(e) {
 function mouseDown(e) {
     if (e.target.innerText == "CLEAR") {
         e.target.style.backgroundColor = "rgb(255, 150, 150)";
+    } else if (e.target.innerText == "DELETE") {
+        e.target.style.backgroundColor = "rgb(150, 150, 255)";
     } else {
         e.target.style.backgroundColor = "rgb(160, 160, 160)";
     }
@@ -87,6 +124,8 @@ function mouseDown(e) {
 function mouseLeave(e) {
     if (e.target.innerText == "CLEAR") {
         e.target.style.backgroundColor = "rgb(255, 200, 200)";
+    } else if (e.target.innerText == "DELETE") {
+        e.target.style.backgroundColor = "rgb(200, 200, 255)";
     } else {
         e.target.style.backgroundColor = "rgb(240, 240, 240)";
     }
@@ -98,6 +137,7 @@ let operation = {
     operator: null,
     second: null
 }
+let opHigh = false;
 
 const buttons = document.querySelectorAll('button');
 buttons.forEach(btn => {
@@ -106,4 +146,7 @@ buttons.forEach(btn => {
     btn.addEventListener('mousedown', mouseDown);
     btn.addEventListener('mouseup', mouseOver);
     btn.addEventListener('mouseleave', mouseLeave);
-})
+});
+
+let acceptableKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '=', '+', '-', '%', '*'];
+window.addEventListener('keydown', key);
