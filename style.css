@@ -22,7 +22,7 @@
     align-items: center;
 }
 
-#display p {
+#displayText {
     margin: 16px;
 }
 
@@ -39,7 +39,7 @@
 }
 
 #clear {
-    background-color: pink;
+    background-color: rgb(255, 200, 200);
 }
 
 .btnRow {
@@ -54,5 +54,5 @@
 button {
     border: 1px solid black;
     border-radius: 6px;
-    background-color: lightgray;
+    background-color: rgb(240, 240, 240);
 }
